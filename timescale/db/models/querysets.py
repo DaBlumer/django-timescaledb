@@ -7,13 +7,14 @@ from datetime import datetime
 
 class TimescaleQuerySet(models.QuerySet):
 
-    def time_bucket(self, field: str, interval: str, annotations: Dict = None):
+    def time_bucket(self, field: str, interval: str, annotations: Dict = None, offset: datetime = None):
         """
         Wraps the TimescaleDB time_bucket function into a queryset method.
         """
+        bucket = TimeBucket(field, interval, *(tuple() if offset is None else (offset,)))
         if annotations:
-            return self.values(bucket=TimeBucket(field, interval)).order_by('-bucket').annotate(**annotations)
-        return self.values(bucket=TimeBucket(field, interval)).order_by('-bucket')
+            return self.values(bucket=bucket).order_by('-bucket').annotate(**annotations)
+        return self.values(bucket=bucket).order_by('-bucket')
 
     def time_bucket_ng(self, field: str, interval: str, annotations: Dict = None):
         """

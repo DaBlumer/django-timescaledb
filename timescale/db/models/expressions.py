@@ -48,7 +48,7 @@ class TimeBucket(models.Func):
         if not isinstance(interval, models.Value):
             interval = models.Value(interval)
         output_field = TimescaleDateTimeField(interval=interval)
-        super().__init__(interval, expression, output_field=output_field)
+        super().__init__(interval, expression, *args, output_field=output_field)
 
 
 class TimeBucketNG(models.Func):
